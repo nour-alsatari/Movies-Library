@@ -4,12 +4,24 @@ const { default: axios } = require("axios");
 const express = require("express");
 
 const app = express();
+// app.use(express.json()); // it's an express thing i have to write so i can see the body of post request otherwise i will get undefined
 
 const data = require("./Movie Data/data.json")
 
 const dotenv = require('dotenv');
-dotenv.config();
+const pg = require('pg');
+
+dotenv.config(); // if i want to read anything inside .end has to be after the config
 const APIKEY = process.env.APIKEY;
+const bodyParser = require('body-parser');
+const jsonParser = bodyParser.json();
+
+const DATABASE_URL = process.env.DATABASE_URL;
+console.log(DATABASE_URL);
+const client = new pg.Client(DATABASE_URL); // this will connect the database with the app
+
+
+
 
 
 // data transfer object 
@@ -74,6 +86,33 @@ app.get('/searchMovie', (req, res) => {
 
 })
 
+// end point to insert data to database, i need to use post because im sending data
 
+app.post('/addMovie', jsonParser, (req, res) => {
+    let movie = req.body // req.body to get the data
+    // write query to insert this in my db
+    const sql = `INSERT INTO moviesAdded (Adult ,overview ,title, release_date, poster_path, comment) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;`
+    // `(${movie.Adult} ,${movie.overview} ,${movie.title}, ${movie.release_date}, ${movie.poster_path}, ${movie.comment})` not secured
+    let values = [movie.Adult, movie.overview, movie.title, movie.release_date, movie.poster_path, movie.comment];
 
-app.listen(3100, () => console.log("server started on 3000"));
+    client.query(sql, values).then((data) => { // this "data" is RETURNING
+        return res.status(201).json(data.rows[0]); // 201 when u create a new instance in db the response has to be 201
+    }) // to merge them and i need to use .then because this returns a promise
+})
+
+// end point to get data from database so the user see the data they intered
+// i wanna get all the movies the user added 
+
+app.get('/getMovies' , (req, res) => {
+    const sql = `SELECT * FROM moviesAdded ;`
+    client.query(sql).then( data => {
+        return res.status(200).json(data.rows);
+    })
+    
+})
+
+// client.connect() returns a promise but i dont want to connect to the server without my database first so i use.then
+client.connect().then(() => {
+
+    app.listen(3100, () => console.log("server started on 3000"));
+})
