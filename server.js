@@ -17,10 +17,12 @@ const APIKEY = process.env.APIKEY;
 // const jsonParser = bodyParser.json();
 
 const DATABASE_URL = process.env.DATABASE_URL;
-console.log(DATABASE_URL);
-const client = new pg.Client(DATABASE_URL); // this will connect the database with the app
+// const client = new pg.Client(DATABASE_URL); // this will connect the database with the app
 
-
+const client = new pg.Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+});
 
 
 
