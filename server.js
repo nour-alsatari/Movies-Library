@@ -13,6 +13,7 @@ const pg = require('pg');
 
 dotenv.config(); // if i want to read anything inside .end has to be after the config
 const APIKEY = process.env.APIKEY;
+const PORT = process.env.PORT;
 // const bodyParser = require('body-parser');
 // const jsonParser = bodyParser.json();
 
@@ -163,5 +164,5 @@ app.delete('/DELETE/:id', (req, res) => {
 // client.connect() returns a promise but i dont want to connect to the server without my database first so i use.then
 client.connect().then(() => {
 
-    app.listen(3200 || 5000, () => console.log("server started on 3200"));
+    app.listen( PORT || 3200, () => console.log("server started on 3200"));
 })
