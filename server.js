@@ -163,5 +163,5 @@ app.delete('/DELETE/:id', (req, res) => {
 // client.connect() returns a promise but i dont want to connect to the server without my database first so i use.then
 client.connect().then(() => {
 
-    app.listen(3200, () => console.log("server started on 3200"));
+    app.listen(3200 || 5000, () => console.log("server started on 3200"));
 })
