@@ -37,18 +37,19 @@ app.get('/', (req, res) => {
 
     // res.status(200).send(data); // this gives me plain text so i need to format the data
     //i will use constructor to format the data again
-    let movie = new Movie(data.title, data.poster_path, data.overview);
-    res.status(200).json(movie);
+    // let movie = new Movie(data.title, data.poster_path, data.overview);
+    //    return res.status(200).json(movie);
+    return res.status(200).send("hello");
 
-    // console.log(movie);
+
 });
 
 
-// app.get('/Favorite', (req, res) => {
+app.get('/Favorite', (req, res) => {
 
-//     res.status(200).send("Welcome to Favorite Page");
+    res.status(200).send("Welcome to Favorite Page");
 
-// });
+});
 
 function Movietask12(id, title, release_date, poster_path, overview) { // created a constructor to specify the data i need 
 
